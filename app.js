@@ -32,7 +32,19 @@ let UIController = (function(){
 // GLOBAL APP CONTROLLER
 let controller = (function(budgetCtrl, UICtrl){
 
-    let DOM = UICtrl.getDOMstrings();
+    function setUpEventListener(){
+        let DOM = UICtrl.getDOMstrings();
+
+        document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
+
+        document.addEventListener('keypress', function(event){
+            if(event.keyCode === 13 || event.which === 13){
+                ctrlAddItem();
+            }
+            
+        });    
+    }
+    
    
     
     let ctrlAddItem = function(){
@@ -50,12 +62,13 @@ let controller = (function(budgetCtrl, UICtrl){
 
         // console.log('It works.');
     }
-    document.querySelector(DOM.inputBtn).addEventListener('click', ctrlAddItem);
 
-    document.addEventListener('keypress', function(event){
-        if(event.keyCode === 13 || event.which === 13){
-            ctrlAddItem();
+    return{
+        init: function(){
+            return setUpEventListener();
         }
-        
-    });
+    }
+    
 })(budgetController, UIController);
+
+controller.init();

@@ -21,7 +21,11 @@ let budgetController = (function(){
         totals: {
             exp: 0,
             inc: 0
-        }
+        },
+
+        budget: 0,
+
+        percentage: -1
     }
 
     return{
@@ -50,6 +54,41 @@ let budgetController = (function(){
             // Return new item
             return newItem;
         },
+
+        calculateBudget: function(type){
+            // Calculate total incomes and expences
+            let sum = 0;
+            data.allItems[type].forEach(function(cur){
+                sum += cur.value;
+            });
+
+            data.totals[type] = sum;
+
+            // Calculate budget
+            data.budget = data.totals['inc'] - data.totals['exp'];
+
+            // Calculate percentage based on income and expences
+            if(data.totals['inc'] > 0){
+                data.percentage = Math.round((data.totals['exp'] / data.totals['inc']) * 100);
+            }
+            else{
+                percentage = -1;
+            }
+            
+
+            // Formula for percentage
+            // inc = 200; exp = 100; percent = 50%; percentage = 100/200 = 0.5 * 100 = 50%
+        },
+
+        getBudget: function(){
+            return{
+                budget: data.budget,
+                totalInc: data.totals['inc'],
+                totalExp: data.totals['exp'],
+                percentage: data.percentage
+            }
+        },
+
         testing: function(){
             return data;
         }
@@ -133,10 +172,15 @@ let controller = (function(budgetCtrl, UICtrl){
     }
     
    
-    let calculateBudget = function(){
-        // 4. Calculate budget
+    let updateBudget = function(type){
+        // 1. Calculate budget
+        budgetCtrl.calculateBudget(type);
 
-        // 5. Update UI    
+        // Get Budget
+        let budget = budgetCtrl.getBudget();
+        // 2. Update UI    
+
+        console.log(budget);
     }
     
     let ctrlAddItem = function(){
@@ -156,7 +200,7 @@ let controller = (function(budgetCtrl, UICtrl){
             UICtrl.clearInputFields();
 
             // Calculate budget
-            calculateBudget();
+            updateBudget(input.type);
         }
     }
 
